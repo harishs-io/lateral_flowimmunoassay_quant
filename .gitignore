@@ -24,3 +24,8 @@ Results/
 *_Analysis_Plot.png
 *_Standard_Curve_Plot.png
 processed_hashes.txt
+
+# Python packaging & build artifacts
+*.egg-info/
+build/
+dist/
