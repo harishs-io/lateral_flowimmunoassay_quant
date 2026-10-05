@@ -1,0 +1,26 @@
+# Python cache & environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Ultralytics & YOLO logs
+runs/
+*.cache
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Processing outputs and local datasets
+Results/
+*_results.txt
+*_cropped_original.png
+*_Analysis_Plot.png
+*_Standard_Curve_Plot.png
+processed_hashes.txt
