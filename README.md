@@ -1,3 +1,5 @@
+**[![DOI](https://zenodo.org/badge/1405581053.svg)](https://doi.org/10.5281/zenodo.23160097)**
+
 # Automated LFIA Signal Quantification Pipeline
 
 A high-throughput computer vision and bioanalytical pipeline for colloidal gold (AuNP) Lateral Flow Immunoassays (LFIA).
