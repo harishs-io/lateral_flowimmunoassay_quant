@@ -16,9 +16,10 @@ A high-throughput computer vision and bioanalytical pipeline for colloidal gold 
 ## Installation
 
 ```bash
-git clone [https://github.com/](https://github.com/)harishs-io/lateral_flowimmunoassay_quant.git
+git clone https://github.com/harishs-io/lateral_flowimmunoassay_quant.git
 cd lateral_flowimmunoassay_quant
 
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+pip install -e .
