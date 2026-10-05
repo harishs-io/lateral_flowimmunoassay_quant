@@ -16,8 +16,8 @@ A high-throughput computer vision and bioanalytical pipeline for colloidal gold 
 ## Installation
 
 ```bash
-git clone [https://github.com/](https://github.com/)<your-username>/lfia-quant-pipeline.git
-cd lfia-quant-pipeline
+git clone [https://github.com/](https://github.com/)harishs-io/lateral_flowimmunoassay_quant.git
+cd lateral_flowimmunoassay_quant
 
 python3 -m venv venv
 source venv/bin/activate
