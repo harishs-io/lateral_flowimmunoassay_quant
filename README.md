@@ -13,6 +13,18 @@ A high-throughput computer vision and bioanalytical pipeline for colloidal gold 
 
 ---
 
+## Example Analysis & Calibration Outputs
+
+### Sample Quantification Output (1 ng/mL)
+![1 ng/mL Analysis](assets/1_1_AuNP.jpeg_Analysis_Plot.png)
+
+### Blank Control Output
+![Blank Control Analysis](assets/Blank_1_AuNP.jpeg_Analysis_Plot.png)
+
+### Standard Calibration Curve
+![Standard Curve Demo](assets/standard_curve_demo.png)
+
+
 ## Installation
 
 ```bash
