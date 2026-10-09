@@ -1,8 +1,10 @@
-**[![DOI](https://zenodo.org/badge/1405581053.svg)](https://doi.org/10.5281/zenodo.23160097)**
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23160097.svg)](https://doi.org/10.5281/zenodo.23160097)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harish-io/lateral_immunoassay_quant/blob/main/notebooks/LFIA_Quantification.ipynb)
 
 # Automated LFIA Signal Quantification Pipeline
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harish-io/lateral_immunoassay_quant/blob/main/notebooks/LFIA_Quantification.ipynb)
+
 
 A high-throughput computer vision and bioanalytical pipeline for colloidal gold (AuNP) Lateral Flow Immunoassays (LFIA).
 
@@ -17,7 +19,7 @@ A high-throughput computer vision and bioanalytical pipeline for colloidal gold 
 
 ## Example Analysis & Calibration Outputs
 
-### Sample Quantification Output (1 ng/mL)
+### Sample Quantification Output (1 ng/mL)	
 ![1 ng/mL Analysis](assets/1_1_AuNP.jpeg_Analysis_Plot.png)
 
 ### Blank Control Output
