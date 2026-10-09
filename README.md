@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23160097.svg)](https://doi.org/10.5281/zenodo.23160097)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harish-io/lateral_immunoassay_quant/blob/main/notebooks/LFIA_Quantification.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harish-io/lateral_immunoassay_quant/blob/main/notebooks/lfia_quant.ipynb)
 
 # Automated LFIA Signal Quantification Pipeline
 
