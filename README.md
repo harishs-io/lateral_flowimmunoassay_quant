@@ -7,9 +7,17 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harishs-io/lateral_flowimmunoassay_quant/blob/main/notebooks/lfia_quant.ipynb)
 
-
-
 A high-throughput computer vision and bioanalytical pipeline for colloidal gold (AuNP) Lateral Flow Immunoassays (LFIA).
+
+---
+
+## Image Requirements
+Before running the pipeline locally or in Google Colab, please ensure your images meet the following criteria:
+* **Assay Type:** Optimized for AuNP (Colloidal Gold) based LFIAs.
+* **Framing:** Ensure each uploaded image contains exactly **one** assay strip.
+* **Naming Convention:** File names *must* begin with the analyte concentration for the data parser to automatically extract the values (e.g., `10ng.jpg`, `0.5ng/ml.png`, `100µg.jpeg`). Any standard image format is supported.
+
+---
 
 ## Key Features
 - **YOLOv8 Automated Localization:** Snug boundary cropping of LFIA strips, eliminating background clutter and illumination drift.
