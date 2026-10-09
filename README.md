@@ -2,6 +2,8 @@
 
 # Automated LFIA Signal Quantification Pipeline
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harish-io/lateral_immunoassay_quant/blob/main/notebooks/LFIA_Quantification.ipynb)
+
 A high-throughput computer vision and bioanalytical pipeline for colloidal gold (AuNP) Lateral Flow Immunoassays (LFIA).
 
 ## Key Features
