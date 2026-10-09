@@ -1,8 +1,11 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23160097.svg)](https://doi.org/10.5281/zenodo.23160097)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harishs-io/lateral_flowimmunoassay_quant/blob/main/notebooks/lfia_quant.ipynb)
+<div align="center">
+  <img src="assets/lfia_cover_image.png" width="950" alt="LFIA Signal Quantification & LoD Calibration">
+  <h1>LFIA Signal Quantification & LoD Calculation</h1>
+</div>
 
-# Automated LFIA Signal Quantification Pipeline
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/harishs-io/lateral_flowimmunoassay_quant/blob/main/notebooks/lfia_quant.ipynb)
 
 
 
