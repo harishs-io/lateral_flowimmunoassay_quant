@@ -2,14 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name="lfia-quant",
-    version="1.0.0",
-    description="Automated Lateral Flow Immunoassay Signal Quantification and Calibration Pipeline",
-    author="Your Name",
+    version="2.0.0",
+    description="Automated Two-Stage Cascaded Lateral Flow Immunoassay Signal Quantification and Calibration Pipeline",
+    author="Harish S",
     packages=find_packages(),
     install_requires=[
         "ultralytics>=8.1.0",
         "opencv-python-headless>=4.8.0",
-        "numpy>=1.24.0,<2.0.0",
+        "numpy>=1.24.0",
         "scipy>=1.11.0",
         "pandas>=2.0.0",
         "matplotlib>=3.8.0",

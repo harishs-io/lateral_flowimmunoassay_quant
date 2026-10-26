@@ -4,20 +4,23 @@ import cv2
 import numpy as np
 from PIL import Image
 from ultralytics import YOLO
-from src.utils import get_file_hash
+try:
+    from src.utils import get_file_hash
+except ImportError:
+    from utils import get_file_hash
 
 def auto_crop_strip(img_path, model, conf_thresh=0.20, sample_collector=None):
     """
-    Localizes and crops nitrocellulose strips using fine-tuned YOLOv8.
-    Preserves native color profiles and EXIF orientation.
+    Stage 1: Localizes and crops nitrocellulose strips from raw assay images
+    using fine-tuned YOLOv8. Preserves native color profiles and EXIF orientation.
     """
     raw_bgr = cv2.imread(img_path)
     if raw_bgr is None:
         raw_bgr = np.array(Image.open(img_path).convert('RGB'))[:, :, ::-1]
 
     img_h, img_w = raw_bgr.shape[:2]
-    results = model.predict(source=img_path, conf=conf_thresh, verbose=False)
-    boxes = results[0].boxes.xyxy.cpu().numpy()
+    results = model.predict(source=raw_bgr, conf=conf_thresh, verbose=False)
+    boxes = results[0].boxes.xyxy.cpu().numpy() if len(results) > 0 and len(results[0].boxes) > 0 else []
 
     if len(boxes) > 0:
         best_box = max(boxes, key=lambda b: (b[2] - b[0]) * (b[3] - b[1]))
@@ -35,6 +38,46 @@ def auto_crop_strip(img_path, model, conf_thresh=0.20, sample_collector=None):
         return cv2.cvtColor(cropped_bgr, cv2.COLOR_BGR2RGB)
 
     return cv2.cvtColor(raw_bgr, cv2.COLOR_BGR2RGB)
+
+def detect_bands_stage2(cropped_rgb, band_model, conf_thresh=0.25):
+    """
+    Stage 2: Detects Control (C, class 0) and Test (T, class 1) bands on a cropped strip.
+    Returns best candidate dictionaries for C and T lines with bounding box coordinates,
+    centroid y-position (yc), and detection confidence.
+    """
+    cropped_bgr = cv2.cvtColor(cropped_rgb, cv2.COLOR_RGB2BGR)
+    results = band_model.predict(source=cropped_bgr, conf=conf_thresh, verbose=False)
+
+    c_candidates = []
+    t_candidates = []
+
+    if len(results) > 0 and len(results[0].boxes) > 0:
+        for box in results[0].boxes:
+            cls_id = int(box.cls[0].cpu().item())
+            conf = float(box.conf[0].cpu().item())
+            xyxy = box.xyxy[0].cpu().numpy()
+            det = {
+                'box': xyxy,
+                'conf': conf,
+                'yc': float((xyxy[1] + xyxy[3]) / 2.0),
+                'y1': float(xyxy[1]),
+                'y2': float(xyxy[3]),
+                'x1': float(xyxy[0]),
+                'x2': float(xyxy[2])
+            }
+            if cls_id == 0:
+                c_candidates.append(det)
+            elif cls_id == 1:
+                t_candidates.append(det)
+
+    best_c = max(c_candidates, key=lambda d: d['conf']) if c_candidates else None
+    best_t = max(t_candidates, key=lambda d: d['conf']) if t_candidates else None
+
+    # Spatial sanity check: Control line must appear upstream of Test line (smaller Y)
+    if best_c and best_t and best_c['yc'] > best_t['yc']:
+        best_c, best_t = best_t, best_c
+
+    return best_c, best_t
 
 def fine_tune_model(dataset_dir, weights_path, collected_samples):
     """
