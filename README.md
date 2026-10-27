@@ -4,9 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Ultralytics YOLOv8](https://img.shields.io/badge/YOLOv8-Inference-00FFFF.svg)](https://github.com/ultralytics/ultralytics)
 
-# Automated Two-Stage Cascaded LFIA Signal Quantification & LoD Calibration Pipeline
+# Deep Learning Framework for Lateral Flow Immunoassay Analytics
 
-An end-to-end computer vision and bioanalytical pipeline for point-of-care **colloidal gold (AuNP) Lateral Flow Immunoassays (LFIA)**. The pipeline combines a **Two-Stage Cascaded YOLOv8 deep learning architecture**, **localized surface plasmon resonance (LSPR) differential spectroscopy**, **adaptive chromatographic peak integration**, **$1/y^2$ weighted Four-Parameter Logistic (4PL) regression**, and **CLSI EP17-compliant analytical Limit of Detection (LoD)** calculation.
+An end-to-end computer vision and bioanalytical pipeline for point-of-care **colloidal gold (AuNP) Lateral Flow Immunoassays (LFIA)**. The pipeline combines a **YOLOv8 deep learning architecture**, **localized surface plasmon resonance (LSPR) differential spectroscopy**, **adaptive chromatographic peak integration**, **$1/y^2$ weighted Four-Parameter Logistic (4PL) regression**, and **CLSI EP17-compliant analytical Limit of Detection (LoD)** calculation.
 
 ---
 
@@ -19,7 +19,7 @@ An end-to-end computer vision and bioanalytical pipeline for point-of-care **col
 
 ## Key Scientific & Engineering Highlights
 
-* **Two-Stage Cascaded YOLOv8 Architecture:**
+* **YOLOv8 Architecture:**
   * **Stage 1 (Strip Localization & Crop):** Localizes and segments the nitrocellulose membrane strip from raw, cluttered smartphone or flatbed images with sub-millimeter precision. Achieves **99.5% mAP@50**, **98.9% Precision**, and **99.1% Recall** at **7.4 ms** inference latency.
   * **Stage 2 (Band Detection & Classification):** Directly inspects the cropped strip to simultaneously classify and predict sub-pixel bounding coordinates for the **Control (C)** line (class 0) and **Test (T)** line (class 1). Achieves **99.1% mAP@50**, **97.2% Precision**, and **98.7% Recall** at **8.3 ms** inference latency.
 * **Physics-Informed LSPR Differential Contrast:** Exploits the localized surface plasmon resonance of colloidal gold nanoparticles ($\lambda_{\text{abs}} \approx 525–535\text{ nm}$) against the nitrocellulose membrane scattering background ($\lambda_{\text{ref}} \approx 650\text{ nm}$), calculating differential optical density $\Delta A(y) = I_{\text{Red}}(y) - I_{\text{Green}}(y)$ with complete suppression of non-specific lighting gradients.
@@ -201,7 +201,7 @@ If you use this pipeline or its pretrained YOLOv8 models in your research, pleas
 ```bibtex
 @software{lfia_quant_2026,
   author       = {Harish S.},
-  title        = {Automated Two-Stage Cascaded Lateral Flow Immunoassay Signal Quantification and Calibration Pipeline},
+  title        = {Deep Learning Framework for Lateral Flow Immunoassay Analytics},
   year         = {2026},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.23160097},
