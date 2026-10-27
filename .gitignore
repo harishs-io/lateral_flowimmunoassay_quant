@@ -25,6 +25,13 @@ Results/
 *_Standard_Curve_Plot.png
 processed_hashes.txt
 
+# Whitelist asset images
+!assets/*.png
+!assets/*.jpg
+!assets/*.jpeg
+!assets/*.svg
+
+
 # Python packaging & build artifacts
 *.egg-info/
 build/
