@@ -24,10 +24,13 @@ An end-to-end computer vision and bioanalytical pipeline for point-of-care **col
   * **Stage 2 (Band Detection & Classification):** Directly inspects the cropped strip to simultaneously classify and predict sub-pixel bounding coordinates for the **Control (C)** line (class 0) and **Test (T)** line (class 1). Achieves **99.1% mAP@50**, **97.2% Precision**, and **98.7% Recall** at **8.3 ms** inference latency.
 * **Physics-Informed LSPR Differential Contrast:** Exploits the localized surface plasmon resonance of colloidal gold nanoparticles ($\lambda_{\text{abs}} \approx 525–535\text{ nm}$) against the nitrocellulose membrane scattering background ($\lambda_{\text{ref}} \approx 650\text{ nm}$), calculating differential optical density $\Delta A(y) = I_{\text{Red}}(y) - I_{\text{Green}}(y)$ with complete suppression of non-specific lighting gradients.
 * **Longitudinal Continuum Baseline & Gated AUC Integration:** Utilizes structural morphological grey opening to eliminate membrane unevenness and vignetting. Band integration enforces a 5% apex boundary cutoff and a strict noise prominence gate ($> 5.0\text{ a.u.}$), preventing false-positive peaks on blank control strips.
-* **Weighted 4-Parameter Logistic (4PL) Calibration:** Solves dynamic non-linear ligand-receptor binding curves weighted by inverse variance ($1/y^2$) to anchor accuracy at low concentrations. Automatically flags high-dose prozone/hook effects and membrane binding saturation plateaus.
+* **Adaptive 4PL / 5PL Non-Linear Calibration & Decision Tree:** Evaluates both symmetric Four-Parameter Logistic (4PL) and asymmetric Five-Parameter Logistic (5PL) regression models using weighted inverse-variance ($1/y^2$) minimization. Automatically applies an Extra Sum-of-Squares $F$-test and Akaike Information Criterion (AICc) decision tree: selects 5PL only when the asymmetry parameter $g$ achieves statistically significant residual variance reduction ($p < 0.05$).
+* **Dual-Panel Standard Curve with Analytical Audit Table:** Directly renders publication standard curves with an integrated lower analytical audit panel detailing the selected regression model, fitted coefficients ($a, b, c, d, g$), CLSI EP17 detection limits, saturation boundaries, and statistical rationale.
+* **CLSI EP34 Two-Point Hook Disruption Parallelism:** Distinguishes high-antigen prozone/hook blockade from true low concentration via 1:10 dilution testing ($\Delta y = y_{\text{diluted}} - y_{\text{neat}} > 0.05$), automatically restoring true sample concentration ($x_{\text{final}} = x_{\text{diluted}} \times 10$).
 * **CLSI EP17 Compliance:** Rigorously calculates the Limit of Blank (LoB) and Limit of Detection (LoD) using non-parametric blank and low-concentration replicate variances:
   $$\text{LoB} = \mu_{\text{blank}} + 1.645 \cdot \sigma_{\text{blank}}$$
   $$\text{LoD} = \text{LoB} + 1.645 \cdot \sigma_{\text{low}}$$
+* **Interactive Google Colab Unknown Sample Quantification:** Dedicated interactive Step 3 in `notebooks/lfia_quant.ipynb` for uploading unknown test strips or direct $T/C$ ratio inputs, calculating concentrations with $\pm 95\%$ Student's $t$ Prediction Intervals, and overlaying unknown samples as diamond markers on the calibration curve.
 
 ---
 
@@ -177,7 +180,7 @@ lateral_flowimmunoassay_quant/
 │   └── lfia_quant.ipynb
 ├── src/                                  # Modular Python source packages
 │   ├── __init__.py
-│   ├── calibration.py                    # 4PL regression, hook detection, & CLSI EP17 LoD
+│   ├── calibration.py                    # Adaptive 4PL/5PL F-test, Hook test, & CLSI EP17 LoD
 │   ├── detector.py                       # Stage 1 auto-crop & Stage 2 band detection
 │   ├── lfia_analyzer.py                  # Master batch pipeline & report generator
 │   ├── signal_processing.py              # LSPR (G - R) physics, baseline, & gated AUC

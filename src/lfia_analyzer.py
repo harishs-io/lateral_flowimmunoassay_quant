@@ -35,9 +35,14 @@ from src.signal_processing import (
 )
 from src.calibration import (
     logistic4,
+    logistic5,
     detect_hook_and_saturation,
     fit_weighted_4pl,
-    calculate_clsi_limits
+    fit_weighted_5pl,
+    adaptive_model_selection,
+    calculate_clsi_limits,
+    invert_concentration,
+    verify_hook_dilution
 )
 
 # Typography settings
@@ -450,10 +455,20 @@ def run_pipeline(base_dir, dataset_dir=None, strip_weights=None, band_weights=No
             fit_mask, hook_conc, hook_sig, is_hook, hook_text = detect_hook_and_saturation(conc_vals, avg_tc)
 
             try:
-                popt, r2, fit_text = fit_weighted_4pl(conc_fit, avg_tc, fit_mask)
-                lob_s, lod_s, lod_c, lod_text, valid_lod = calculate_clsi_limits(avg_tc, std_tc, conc_fit, popt)
+                model_decision = adaptive_model_selection(conc_fit, avg_tc, fit_mask)
+                model_choice = model_decision['model']
+                popt = model_decision['popt']
+                r2 = model_decision['r_squared']
+                fit_text = model_decision['fit_text']
+                model_rationale = model_decision['rationale']
 
-                fig_c, ax = plt.subplots(figsize=(6.5, 5.2), dpi=300)
+                lob_s, lod_s, lod_c, lod_text, valid_lod = calculate_clsi_limits(avg_tc, std_tc, conc_fit, popt, model_choice)
+
+                # Figure with 2 subplots: Top = Publication Curve, Bottom = Analytical Parameters Audit Box
+                fig_c, (ax, ax_table) = plt.subplots(
+                    2, 1, figsize=(7.2, 7.0), dpi=300, 
+                    gridspec_kw={'height_ratios': [3.5, 1.2]}
+                )
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
                 ax.errorbar(conc_vals, avg_tc, yerr=std_tc, fmt='o', color='#0f2a4a',
@@ -461,8 +476,13 @@ def run_pipeline(base_dir, dataset_dir=None, strip_weights=None, band_weights=No
                             label="Experimental Data (Mean ± SD)", zorder=3)
 
                 x_smooth = np.logspace(np.log10(conc_fit.min() * 0.5), np.log10(conc_fit.max() * 2.0), 350)
-                ax.plot(x_smooth, logistic4(x_smooth, *popt), color='#dc2626',
-                        linewidth=1.8, label=f"4PL Fit ($R^2$ = {r2:.4f})", zorder=2)
+                if model_choice == '5PL':
+                    y_smooth = logistic5(x_smooth, *popt)
+                else:
+                    y_smooth = logistic4(x_smooth, *popt[:4])
+
+                ax.plot(x_smooth, y_smooth, color='#dc2626',
+                        linewidth=1.8, label=f"{model_choice} Dynamic Fit ($R^2$ = {r2:.4f})", zorder=2)
 
                 if valid_lod:
                     ax.plot(lod_c, lod_s, marker='D', markersize=6.5, color='#111827',
@@ -474,11 +494,39 @@ def run_pipeline(base_dir, dataset_dir=None, strip_weights=None, band_weights=No
                 ax.set_xscale('log')
                 ax.set_xlabel("Target Concentration (ng/mL)", fontweight='bold')
                 ax.set_ylabel("Signal Ratio (T/C)", fontweight='bold')
-                ax.set_title(f"{substrate_name} Standard Curve\n{folder_name}", fontweight='bold')
+                ax.set_title(f"{substrate_name} Standard Curve & Analytical Limits\n{folder_name}", fontweight='bold', fontsize=11)
                 ax.set_xlim(conc_fit.min() * 0.5, conc_fit.max() * 2.0)
                 ax.set_ylim(0, max(np.max(avg_tc) + np.max(std_tc), popt[3]) * 1.15)
                 ax.legend(frameon=True, fontsize=8, loc='lower right')
 
+                # Lower Panel: Detailed Analytical Audit Parameters Table
+                ax_table.axis('off')
+                param_str = f"a={popt[0]:.4f}, b={popt[1]:.4f}, c={popt[2]:.4f}, d={popt[3]:.4f}"
+                if model_choice == '5PL':
+                    param_str += f", g={popt[4]:.4f}"
+
+                audit_rows = [
+                    ["Regression Model", f"{model_choice} (Adaptive Decision Tree)", f"R² = {r2:.4f}"],
+                    ["Fitted Parameters", param_str, f"Decision: {model_rationale[:42]}..."],
+                    ["CLSI EP17 Limits", f"LoB = {lob_s:.4f} | LoD = {lod_s:.4f}", f"LoD Conc = {lod_c:.4f} ng/mL" if valid_lod else "LoD = Out of Range"],
+                    ["Binding Saturation", f"Threshold >= {hook_conc:.2f} ng/mL", "Hook Effect: " + ("Detected" if is_hook else "Negative")]
+                ]
+
+                table = ax_table.table(
+                    cellText=audit_rows,
+                    colLabels=["Analytical Metric", "Quantitative Parameter", "Bioanalytical Status"],
+                    cellLoc='left', loc='center', bbox=[0.0, 0.0, 1.0, 1.0]
+                )
+                table.auto_set_font_size(False)
+                table.set_fontsize(7.5)
+                for (r, c_idx), cell in table.get_celld().items():
+                    if r == 0:
+                        cell.set_facecolor('#0f172a')
+                        cell.set_text_props(color='#ffffff', weight='bold')
+                    else:
+                        cell.set_facecolor('#f8fafc' if r % 2 == 0 else '#ffffff')
+
+                plt.tight_layout()
                 std_curve_path = os.path.join(results_dir, f"{folder_name}_Standard_Curve_Plot.png")
                 plt.savefig(std_curve_path, bbox_inches='tight', dpi=300)
                 plt.close(fig_c)
